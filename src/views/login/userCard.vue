@@ -1,8 +1,9 @@
 <template>
+<!-- 카드번호 -->
   <div class="content">
       <form>
         <div class="form-item">
-          <label for="card" style="display:block;margin-left: 10px;">카드번호</label>
+          <label for="card">카드번호</label>
           <div class="cardNum">
             <input type="text" id="card" v-model="A" maxlength="4" @keyup="numVarify(A)" autocomplete="off"/> -
             <input type="text" v-model="B" maxlength="4" @keyup="numVarify(B)" autocomplete="off"/> -
@@ -10,7 +11,6 @@
             <input type="text" v-model="D" maxlength="4" @keyup="numVarify(D)" autocomplete="off"/>
           </div>
           <span>{{numWarn}}</span>
-
         </div>
       </form>
       <button type="submit" class="subBtn" @click="submitInfo">완 료</button>
@@ -19,7 +19,6 @@
 
 <script>
 export default {
-    name:"userCard",
   data(){
     return{
       A:"",
@@ -29,10 +28,8 @@ export default {
       numWarn:"",
     }
   },
-  mounted(){
-    console.log("usercard",this.$store.state.userInfo)
-  },
   methods:{
+    // 4자리 수자인지를 검증
     numVarify(num){
       const reg = /^[0-9]{4}$/
       if(!reg.test(num)){
@@ -41,47 +38,60 @@ export default {
         this.numWarn =""
       }
     },
+    // 완료버튼
     submitInfo(){
       if(this.checkCard()){
         this.numWarn = ""
+        let cardNumber = this.A + this.B + this.C + this.D
+        this.$store.commit("setUserInfo", cardNumber)
+        console.log("UserInformation:", this.$store.state.userInfo)
         this.$router.push("finishSignUp")
       } else {
         this.numWarn = "정확한 카드번호를 입력하세요"
       }
     },
-   checkCard(){
+    // 카드번호 검증
+    checkCard(){
       let A = this.A.toString()
       let B = this.B.toString()
       let C = this.C.toString()
       let D = this.D.toString()
-      console.log("a",A)
+      // 짝수번제 수자처리방법
       function handleNum (num){
-        let evenNum1 = "" 
-        let evenNum2 = "" 
-        let chartNum1 = num.charAt(1)
-        let chartNum2 = num.charAt(3)
-        evenNum1 = chartNum1*2 >9 ? multiplyNum(chartNum1) : chartNum1
-        evenNum2 = chartNum2*2 >9 ? multiplyNum(chartNum2) : chartNum2
+        let chartNum1 = num.charAt(0) // 오른쪽 두번제수자 뽑기
+        let chartNum2 = num.charAt(2) // 오른쪽 네번제수자 뽑기
+        // 짝수번제 수자를 곱하기 2 한다. 9보다 크면 각 자리수를 더한다
+        let evenNum1 = multiplyNum(chartNum1) 
+        let evenNum2 = multiplyNum(chartNum2) 
         function multiplyNum(evenNum){
-          let sum = evenNum.charAt(0)+evenNum.charAt(1)
-          console.log("sum",sum)
-          return sum
+          let nums = (evenNum * 2 ).toString()
+          if(nums>9){
+            let sum = Number(nums.charAt(0)) + Number(nums.charAt(1))
+            console.log("sum",sum)
+            return sum
+          } else {
+           return nums
+          }
         }
-        let newNum = num.charAt(0) + evenNum1 + num.charAt(2) +evenNum2
+        // 4자리 수자를 다시조합
+        let newNum = evenNum1 + num.charAt(1) + evenNum2 + num.charAt(3)
         return newNum
       }
+      // 짝수번제 수자처리
       A = handleNum(A)
       B = handleNum(B)
       C = handleNum(C)
       D = handleNum(D)
-      console.log("A + B + C + D ", (A + B + C + D ) )
+      // 처리후의 수자문열을 붙인후 배열로 변환
       let wholeNum =  (A + B + C + D ).split("")
       console.log("wholeNum ", wholeNum )
       let total = 0
+      // 각 수자를 더한다
       wholeNum.forEach(element => {
         total = total + Number(element)
       });
       console.log( "total", total)
+      // 더한 합계를 10으로 나눈후의 판단한 불린 결과를 얻는다
       let resualt = total % 10 == 0 ? true : false
       return resualt
    }
@@ -101,5 +111,9 @@ export default {
 span{
   font-size: 12px;
   color: red;
+}
+label{
+  display:block;
+  margin-left: 10px;
 }
 </style>

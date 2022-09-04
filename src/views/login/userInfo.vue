@@ -1,15 +1,16 @@
 <template>
+<!-- 회원상세정보 -->
   <div class="content">
       <form>
         <div class="form-item">
           <label for="name">이름</label>
-          <input type="text" id="name" v-model="form.name" @blur="name" 
+          <input type="text" id="name" v-model="form.name" @blur="vfname" 
           placeholder="이름 입력하세요"/>
           <span class="warns">{{nameWarn}}</span>
         </div>
         <div class="form-item">
           <label for="phone">연락처</label>
-          <input type="text" id="phone" v-model="form.phone" @blur="phone" 
+          <input type="text" id="phone" v-model="form.phone" @blur="vfphone" 
           placeholder="연락처 입력하세요"/>
           <span class="warns">{{phoneWarn}}</span>
         </div>
@@ -19,14 +20,15 @@
             <button type="button" class="subBtn postCodeBtn" @click="checkAddress">우편번호</button>
           </div>
           <div class="address">
-            <input id="address" type="text" v-model="form.address" @blur="address" 
+            <input id="address" type="text" v-model="form.address" @blur="vfaddress" 
           placeholder="주소 입력하세요"/>
           <span class="warns">{{addressWarn}}</span>
-            <input id="detailAddress" type="text" v-model="form.detailAddress" @blur="detailAddress" 
+            <input id="detailAddress" type="text" v-model="form.detailAddress" @blur="vfdetailAddress" 
           placeholder="상세주소 입력하세요"/>
           <span class="warns">{{detailAddressWarn}}</span>
           </div>
-          
+          <!-- 우편변호 component -->
+          <post-code ref="postCodeRef"></post-code>
         </div>
       </form>
       <button type="button" class="preBtn" @click="preButton">이 전</button>
@@ -35,7 +37,11 @@
 </template>
 
 <script>
+import PostCode from "../../components/postCode.vue"
 export default {
+  components:{
+    PostCode
+  },
   data(){
     return{
       form:{
@@ -51,11 +57,13 @@ export default {
     }
   },
   mounted(){
-    this.form = Object.assign({},this.$store.state.userInfo)
+    // 저장했던 정보를 조합
+    this.form = Object.assign({},this.form,this.$store.state.userInfo)
     console.log("state",this.$store.state.userInfo)
   },
   methods:{
-    name(){
+    // 이를 검증
+    vfname(){
       const regName=/^([가-힣]){2,}$/
       const regName2 = /^([a-zA-Z]){3,}$/
       if(!regName.test(this.form.name)&&!regName2.test(this.form.name)){
@@ -65,7 +73,8 @@ export default {
         return true
       }
     },
-    phone(){
+    // 연락처 검증
+    vfphone(){
       const regPhone = /^0(([0-9]{2}[ |-])|([0-9]{2}))(([0-9]{3,4}[ |-])|([0-9]{3,4}))[0-9]{4}$/
       if(!regPhone.test(this.form.phone)){
         this.phoneWarn = "연락처 정확히 입력해주세요"
@@ -74,7 +83,8 @@ export default {
         return true
       }
     },
-    address(){
+    // 주소 검증
+    vfaddress(){
       if(this.form.address === ""){
         this.addressWarn = "주소 입력해주세요"
       } else {
@@ -82,7 +92,8 @@ export default {
         return true
       }
     },
-    detailAddress(){
+    // 상세주소 검증
+    vfdetailAddress(){
       if(this.form.detailAddress === ""){
         this.detailAddressWarn = "상세주소 입력해주세요"
       } else {
@@ -90,17 +101,16 @@ export default {
         return true
       }
     },
-    checkAddress(){
-      console.log("check address...")
-    },
+    // 이전 버튼
     preButton(){
-      const params = this.form??{}
+      const params = this.form
       this.$store.commit("setUserInfo", params)
       this.$router.go(-1)
     },
+    // 다음 버튼
     nextButton(){
-      console.log("123123123123")
-      if(this.name()&&this.phone()&&this.address()&&this.detailAddress()){
+      // 모든 입력한 정보가 맞으면 정보를 저장하고 다음 페이지로 이동
+      if(this.vfname()&&this.vfphone()&&this.vfaddress()&&this.vfdetailAddress()){
         console.log("form",this.form)
         const params = this.form
         this.$store.commit('setUserInfo',params)
@@ -109,7 +119,10 @@ export default {
         alert("정확히 입력해주세요")
       }
     },
-
+    // 우편번호 컴포넌트 호출
+    checkAddress() {
+      this.$refs.postCodeRef.open()
+    },
   }
 }
 </script>

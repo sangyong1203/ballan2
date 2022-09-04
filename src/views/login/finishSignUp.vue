@@ -1,4 +1,5 @@
 <template>
+<!-- 회원가입완료 -->
   <div class="content">
     <div class="info">
       <div class="headInfo">
@@ -22,11 +23,10 @@ export default {
     }
   },
   mounted(){
-    console.log(this.$store.state.userInfo)
+    // 정보 추출후 form에 할당
     this.form = this.$store.state.userInfo
   },
   methods:{
-
   }
 }
 </script>
