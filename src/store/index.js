@@ -11,7 +11,8 @@ export default new Vuex.Store({
   },
   mutations: {
     setUserInfo(state, param){
-      state.userInfo = param
+      console.log("setUserinfo",param)
+      state.userInfo = Object.assign({},this.state.userInfo, param)
     }
   },
   actions: {

@@ -12,7 +12,7 @@
 
         </div>
       </form>
-      <button type="submit" class="subBtn" @click="submitInfo()">완 료</button>
+      <button type="submit" class="subBtn" @click="submitInfo">완 료</button>
     </div>
 </template>
 
@@ -24,9 +24,13 @@ export default {
       
     }
   },
+  mounted(){
+    console.log("usercard",this.$store.state.userInfo)
+  },
   methods:{
     submitInfo(){
       console.log("submitInfo...")
+      this.$router.push("finishSignUp")
     },
 
   }

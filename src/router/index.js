@@ -19,6 +19,11 @@ const routes = [
     name: 'userCard',
     component: () => import('../views/login/userCard.vue')
   },
+  {
+    path: '/finishSignUp',
+    name: 'finishSignUp',
+    component: () => import('../views/login/finishSignUp.vue')
+  },
 ]
 
 const router = new VueRouter({

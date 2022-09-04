@@ -60,9 +60,10 @@
     color:white;
   }
   .warns{
-    font-size: 8px;
+    font-size: 6px;
     color: red;
     text-align: left;
     float: right;
-    width: 150px;
+    width: 260px;
+    margin: 0 10px;
   }
