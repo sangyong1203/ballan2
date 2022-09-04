@@ -54,12 +54,20 @@ export default {
       phoneWarn:"",
       addressWarn:"",
       detailAddressWarn:"",
+      address:""
     }
   },
   mounted(){
     // 저장했던 정보를 조합
     this.form = Object.assign({},this.form,this.$store.state.userInfo)
     console.log("state",this.$store.state.userInfo)
+  },
+  watch:{
+    // 주소변동 감시
+    address(){
+      this.form.address = this.address
+      this.addressWarn = ""
+    }
   },
   methods:{
     // 이를 검증

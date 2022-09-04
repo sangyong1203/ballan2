@@ -36,7 +36,7 @@ export default{
                         addr = data.jibunAddress;
                     }
                     // 우편번호와 주소 정보를 해당 필드에 넣는다.
-                    that.$parent.form.address = addr
+                    that.$parent.address = addr
                     // 커서를 상세주소 필드로 이동한다.
                     document.getElementById("detailAddress").focus();
                     // iframe을 넣은 element를 안보이게 한다.
